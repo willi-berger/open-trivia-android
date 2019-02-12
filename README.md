@@ -1,7 +1,11 @@
 # open-trivia-android
+
 work in progress...
+
+--
 a simple Android app for a quiz game based on the OpenTrivia API  https://opentdb.com/
-----
+--
+
 prerequesites:
 * Android Studio and SDK
 * OkHttp client jar (as gradele dependeny)
