@@ -2,7 +2,7 @@
 
 work in progress...
 
---
+
 a simple Android app for a quiz game based on the OpenTrivia API  https://opentdb.com/
 --
 
