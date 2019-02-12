@@ -10,5 +10,5 @@ prerequesites:
 * OkHttpClient jar http://square.github.io/okhttp/ (included as gradle dependecny)
 
 Credits:
-* As starting poinf for my first stels I have used the Android gestting started guide https://developer.android.com/training/basics/firstapp/
+* As starting poinf for my first tests I have used the Android getting started guide https://developer.android.com/training/basics/firstapp/
 * and the small but comprehensive tutorial https://medium.com/@ssaurel/develop-a-chuck-norris-facts-android-app-with-kotlin-d0d7b14e98dd
