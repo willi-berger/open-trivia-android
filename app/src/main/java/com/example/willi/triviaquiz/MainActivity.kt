@@ -23,26 +23,14 @@ class MainActivity : AppCompatActivity() {
 
     var categoriesToIdMap = HashMap<String, Int>()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // load categories with async Task
+        // load categories and populate with async Task
         val task = AsynchLoadCategories(this)
         task.execute("urlparam")
 
-//        // Create an ArrayAdapter using the string array and a default spinner layout
-//        ArrayAdapter.createFromResource(
-//            this,
-//            R.array.planets_array,
-//            android.R.layout.simple_spinner_item
-//        ).also { adapter ->
-//            // Specify the layout to use when the list of choices appears
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//            // Apply the adapter to the spinner
-//            spinner.adapter = adapter
-//        }
         // populate difficulty spinner
         val spinnerDiff : Spinner = findViewById(R.id.spinnerDifficulty)
         ArrayAdapter.createFromResource(
@@ -63,8 +51,11 @@ class MainActivity : AppCompatActivity() {
         val spinner : Spinner = findViewById(R.id.spinnerCategory)
         val selectedItem = spinner.selectedItem
         Log.d(TAG, "selected item $selectedItem")
+        // ToDo find possibilty to add Id and Label to spinner
         val selectedId = categoriesToIdMap.get(selectedItem)
         Log.d(TAG, "selected Id = $selectedId")
+        // pass the selected category and difficulty as extra params with the intent
+        // ToDo also pass the selected difficulty
         val intent = Intent(this, MultipleChoiceActivity::class.java).apply {
             putExtra(EXTRA_MESSAGE, selectedId)
         }
@@ -85,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun doInBackground(vararg params: String?): String? {
 
+                Log.d(TAG, "doRunInBackground param0: ${params[0]}")
                 val activity = activityRef.get()
                 if (activity == null || activity.isFinishing)
                     return null

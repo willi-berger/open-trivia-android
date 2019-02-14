@@ -45,9 +45,9 @@ class OpenTrivia {
         return categories
     }
 
-    fun getMutltipleChoiceQuestion(categoryId : Int) {
+    fun getMutltipleChoiceQuestion(categoryId : Int) : MultipleChoice {
         Log.d(TAG, "getMultipleChoiceQuestion ${categoryId}")
-
+        // ToDo call OpenTrivia and parse retrieved question and answers
         // https://opentdb.com/api.php?amount=1&category=11&difficulty=easy&type=multiple
         //{
         //"response_code": 0,
@@ -62,8 +62,11 @@ class OpenTrivia {
         //	]
         //}
 
-        //var respCode = multipleChoiceJSON.getInt("response_code")
+        //var respCode = multipleChoiceJSON.getInt("response_code"// 19:41:18.167 [Test worker] DEBUG a.b.o.client.OpenTriviaConnector - MultipleChoice [question=What is the first book of the Old Testament?, answers=[Exodus, Leviticus, Numbers], nAnswers=4, answer=Genesis]
 
+        // for test to see the progressbar ;)
+        Thread.sleep(3000)
+        return MultipleChoice("What is the first book of the Old Testament?", 4)
     }
 
 }
