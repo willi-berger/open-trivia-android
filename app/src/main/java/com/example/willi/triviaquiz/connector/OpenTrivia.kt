@@ -1,5 +1,6 @@
 package com.example.willi.triviaquiz.connector
 
+import android.text.Html
 import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -45,8 +46,10 @@ class OpenTrivia {
         return categories
     }
 
-    fun getMutltipleChoiceQuestion(categoryId : Int) : MultipleChoice {
-        Log.d(TAG, "getMultipleChoiceQuestion ${categoryId}")
+    fun getMutltipleChoiceQuestion(categoryId : Int, level : Difficulty) : MultipleChoice {
+        Log.d(TAG, "getMultipleChoiceQuestion $categoryId")
+        val  url = "$OpenTriviaApiUrl?amount=1&category=$categoryId&difficulty=$level&type=multiple";
+
         // ToDo call OpenTrivia and parse retrieved question and answers
         // https://opentdb.com/api.php?amount=1&category=11&difficulty=easy&type=multiple
         //{
@@ -62,11 +65,28 @@ class OpenTrivia {
         //	]
         //}
 
-        //var respCode = multipleChoiceJSON.getInt("response_code"// 19:41:18.167 [Test worker] DEBUG a.b.o.client.OpenTriviaConnector - MultipleChoice [question=What is the first book of the Old Testament?, answers=[Exodus, Leviticus, Numbers], nAnswers=4, answer=Genesis]
-
+        Log.d(TAG, "execute request $url")
+        val request = Request.Builder().url(url).build()
+        val response = okHttpClient.newCall(request).execute()
+        val responseStr: String?  = response.body()?.string()
+        Log.d(TAG, "respBody: >$responseStr<")
         // for test to see the progressbar ;)
-        Thread.sleep(3000)
-        return MultipleChoice("What is the first book of the Old Testament?", 4)
+        Thread.sleep(800)
+
+        val resultJson = JSONObject(responseStr)
+        val respCode = resultJson.getInt("response_code")
+        if (respCode != 0)
+            throw  Exception("Unexpected response code: $respCode")
+
+        val mcResult = resultJson.getJSONArray("results").getJSONObject(0)
+        var multipleChoice = MultipleChoice(Html.fromHtml(mcResult.getString("question")).toString(), 4)
+        multipleChoice.correctAnswer = Html.fromHtml(mcResult.getString("correct_answer")).toString()
+
+        val wrongAnswers = mcResult.getJSONArray("incorrect_answers")
+        for (i in 0 until wrongAnswers.length()) {
+            multipleChoice.wrongAnswers.add(Html.fromHtml(wrongAnswers.getString(i)).toString())
+        }
+        return multipleChoice
     }
 
 }
