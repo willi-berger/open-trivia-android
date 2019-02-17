@@ -47,7 +47,7 @@ class OpenTrivia {
     }
 
     fun getMutltipleChoiceQuestion(categoryId : Int, level : Difficulty) : MultipleChoice {
-        Log.d(TAG, "getMultipleChoiceQuestion $categoryId")
+        Log.d(TAG, "getMultipleChoiceQuestion for category: $categoryId")
         val  url = "$OpenTriviaApiUrl?amount=1&category=$categoryId&difficulty=$level&type=multiple";
 
         // ToDo call OpenTrivia and parse retrieved question and answers
@@ -79,7 +79,10 @@ class OpenTrivia {
             throw  Exception("Unexpected response code: $respCode")
 
         val mcResult = resultJson.getJSONArray("results").getJSONObject(0)
-        var multipleChoice = MultipleChoice(Html.fromHtml(mcResult.getString("question")).toString(), 4)
+        var multipleChoice = MultipleChoice(
+            Html.fromHtml(mcResult.getString("category")).toString(),
+            Html.fromHtml(mcResult.getString("question")).toString(),
+            4)
         multipleChoice.correctAnswer = Html.fromHtml(mcResult.getString("correct_answer")).toString()
 
         val wrongAnswers = mcResult.getJSONArray("incorrect_answers")

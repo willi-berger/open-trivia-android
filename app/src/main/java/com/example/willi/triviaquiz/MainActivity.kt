@@ -14,7 +14,9 @@ import java.lang.ref.WeakReference
 
 private const val TAG = "MainActivity";
 
-const val EXTRA_MESSAGE = "com.example.willi.triviaquiz.MESSAGE";
+const val EXTRA_MESSAGE_CAT_ID = "com.example.willi.triviaquiz.msg.catId";
+const val EXTRA_MESSAGE_CAT_NAME = "com.example.willi.triviaquiz.msg.catName";
+const val EXTRA_MESSAGE_DIFF = "com.example.willi.triviaquiz.msg.diff";
 
 /**
  * main activity
@@ -51,13 +53,18 @@ class MainActivity : AppCompatActivity() {
         val spinner : Spinner = findViewById(R.id.spinnerCategory)
         val selectedItem = spinner.selectedItem
         Log.d(TAG, "selected item $selectedItem")
-        // ToDo find possibilty to add Id and Label to spinner
-        val selectedId = categoriesToIdMap.get(selectedItem)
+        // ToDo find possibility to add Id and Label to spinner
+        val selectedId = categoriesToIdMap.get(selectedItem)?.toInt()
         Log.d(TAG, "selected Id = $selectedId")
+
+        val spinnerDiff : Spinner = findViewById(R.id.spinnerDifficulty)
+        val selectedDiff = spinnerDiff.selectedItem.toString()
         // pass the selected category and difficulty as extra params with the intent
         // ToDo also pass the selected difficulty
         val intent = Intent(this, MultipleChoiceActivity::class.java).apply {
-            putExtra(EXTRA_MESSAGE, selectedId)
+            putExtra(EXTRA_MESSAGE_CAT_ID, selectedId)
+            putExtra(EXTRA_MESSAGE_DIFF, selectedDiff)
+            putExtra(EXTRA_MESSAGE_CAT_NAME, selectedItem.toString())
         }
         startActivity(intent)
     }
@@ -112,8 +119,6 @@ class MainActivity : AppCompatActivity() {
                 if (activity == null || activity.isFinishing) return
                 activity.progressBar.visibility = View.GONE
             }
-
-
 
         }
     }

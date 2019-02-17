@@ -1,12 +1,9 @@
 package com.example.willi.triviaquiz.connector
 
-class MultipleChoice constructor(question: String, nAnswers: Int)
+class MultipleChoice constructor(val category : String, val question: String, val nAnswers: Int)
 {
-    val question = question
     var wrongAnswers : ArrayList<String> = ArrayList(nAnswers)
-    val nAnswers = nAnswers
     var correctAnswer : String = ""
     init {
-
     }
 }
