@@ -83,7 +83,6 @@ class  MultipleChoiceActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Wrong :) -- Right answer is ${multipleChoice.correctAnswer}", Toast.LENGTH_LONG).show()
             }
-            Thread.sleep(2000)
 
             this.findViewById<Button>(R.id.nextButton).isEnabled = true
 
@@ -186,10 +185,12 @@ class  MultipleChoiceActivity : AppCompatActivity() {
         } else {
             radio.setBackgroundColor(Color.RED)
         }
+        radio.isEnabled = false
     }
 
     private fun clearRadioAnswer(radio : RadioButton) {
         radio.setBackgroundColor(Color.WHITE)
         radio.isChecked = false
+        radio.isEnabled = true
     }
 }

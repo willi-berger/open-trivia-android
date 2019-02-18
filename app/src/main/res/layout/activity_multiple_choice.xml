@@ -55,22 +55,22 @@
                 android:text="@string/answer1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/answer0" android:layout_weight="1"
-                android:onClick="radioButtonClicked"/>
+                android:onClick="radioButtonClicked" android:layout_marginBottom="6dp" android:layout_marginTop="4dp"/>
         <RadioButton
                 android:text="@string/answer2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/answer1" android:layout_weight="1"
-                android:onClick="radioButtonClicked"/>
+                android:onClick="radioButtonClicked" android:layout_marginBottom="6dp"/>
         <RadioButton
                 android:text="@string/answer3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/answer2" android:layout_weight="1"
-                android:onClick="radioButtonClicked"/>
+                android:onClick="radioButtonClicked" android:layout_marginBottom="6dp"/>
         <RadioButton
                 android:text="@string/answer4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/answer3" android:layout_weight="1"
-                android:onClick="radioButtonClicked"/>
+                android:onClick="radioButtonClicked" android:layout_marginBottom="4dp"/>
     </RadioGroup>
 
     <ProgressBar
