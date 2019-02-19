@@ -8,8 +8,10 @@ import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import com.example.willi.triviaquiz.connector.OpenTrivia
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.Exception
 import java.lang.ref.WeakReference
 
 private const val TAG = "MainActivity";
@@ -87,29 +89,31 @@ class MainActivity : AppCompatActivity() {
                 val activity = activityRef.get()
                 if (activity == null || activity.isFinishing)
                     return null
-
                 // fetch categories
                 val categoriesArray : ArrayList<String> = ArrayList<String>();
-                Log.d(TAG,"retrieve categories from OpenTrivia");
-                for (cat in OpenTrivia().getCategories()) {
-                    Log.d(TAG, "adding category ${cat.name} to list")
-                    categoriesArray.add(cat.name)
-                    activity.categoriesToIdMap.put(cat.name, cat.id)
+                try {
+                    Log.d(TAG,"retrieve categories from OpenTrivia");
+                    for (cat in OpenTrivia().getCategories()) {
+                        Log.d(TAG, "adding category ${cat.name} to list")
+                        categoriesArray.add(cat.name)
+                        activity.categoriesToIdMap.put(cat.name, cat.id)
+                    }
+                    // update spinner
+                    // populate category spinner
+                    // found in https://stackoverflow.com/questions/35449800/best-practice-to-implement-key-value-pair-in-android-spinner/35450251
+                    // important only ui threads my change the UI
+                    activity.runOnUiThread{
+                        val categoriesSpinner: Spinner = activity.findViewById(R.id.spinnerCategory)
+                        val categoriesAdapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, categoriesArray)
+                        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        categoriesSpinner.adapter = categoriesAdapter
+                    }
+                } catch (e : Exception) {
+                    Log.e(TAG, "Unexpected exc retrieving multiple choice. {$e.message}", e)
+                    activity.runOnUiThread(Runnable {
+                        Toast.makeText(activity, "An error occurred please retry later: ${e.message}", Toast.LENGTH_LONG).show()
+                    })
                 }
-
-                // update spinner
-                // populate category spinner
-                // found in https://stackoverflow.com/questions/35449800/best-practice-to-implement-key-value-pair-in-android-spinner/35450251
-
-                // important only ui threads my change the UI
-                activity.runOnUiThread{
-                    val categoriesSpinner: Spinner = activity.findViewById(R.id.spinnerCategory)
-                    val categoriesAdapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, categoriesArray)
-                    categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    categoriesSpinner.adapter = categoriesAdapter
-                }
-
-                // hide progress bar
                 return "done"
             }
 
