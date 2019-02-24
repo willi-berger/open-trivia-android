@@ -35,8 +35,8 @@ class  MultipleChoiceActivity : AppCompatActivity() {
         setContentView(R.layout.activity_multiple_choice)
 
         //clear and init fields
-        // ToDo current category could be retrieved from OprnTrivia response
-        findViewById<TextView>(R.id.categoryName).text = categoryName
+        // current category is retrieved from OpenTrivia response
+        //findViewById<TextView>(R.id.categoryName).text = categoryName
         question.text = ""
         answer0.text = ""
         answer1.text = ""
@@ -106,23 +106,16 @@ class  MultipleChoiceActivity : AppCompatActivity() {
 
     companion object {
         class AsynchRetrieveMultipleChoice
-        internal constructor (activity : MultipleChoiceActivity, categoryId : Int, difficulty: Difficulty) : AsyncTask<Int, Int, Int>() {
+        internal constructor (activity : MultipleChoiceActivity, val categoryId : Int, val difficulty: Difficulty) : AsyncTask<Int, Int, Int>() {
 
             private val activityRef : WeakReference<MultipleChoiceActivity> = WeakReference(activity)
-            private val categoryId = categoryId
-            private val difficulty : Difficulty = difficulty
 
             override fun onPreExecute() {
-                val activity = activityRef.get()
-                if (activity == null || activity.isFinishing) return
-                activity.progressBar.visibility = View.VISIBLE
+                activity()?.let { it.progressBar.visibility = View.VISIBLE }
             }
             override fun doInBackground(vararg params: Int?): Int {
                 Log.d(TAG, "AsynchRetrieveMultipleChoice.doInBackground ..")
-                val activity = activityRef.get()
-                if (activity == null || activity.isFinishing)
-                    return -1  // err
-
+                val activity = activity()?: return -1
                 //retrieve multiple choice
                 try {
                     val multipleChoice = OpenTrivia().getMutltipleChoiceQuestion(categoryId, difficulty)
@@ -170,11 +163,15 @@ class  MultipleChoiceActivity : AppCompatActivity() {
                 return 0
             }
             override fun onPostExecute(result: Int) {
+                activity()?.let { it.progressBar.visibility = View.GONE }
+            }
 
+            private fun activity() : MultipleChoiceActivity? {
                 val activity = activityRef.get()
-                if (activity == null || activity.isFinishing)
-                    return
-                activity.progressBar.visibility = View.GONE
+                if (activity != null && !activity.isFinishing) {
+                    return activity
+                }
+                return null
             }
         }
     }
