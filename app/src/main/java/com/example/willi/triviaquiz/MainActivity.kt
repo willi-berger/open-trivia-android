@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.RadioButton
 import android.widget.Spinner
 import android.widget.Toast
 import com.example.willi.triviaquiz.connector.OpenTrivia
@@ -62,8 +63,13 @@ class MainActivity : AppCompatActivity() {
         val spinnerDiff : Spinner = findViewById(R.id.spinnerDifficulty)
         val selectedDiff = spinnerDiff.selectedItem.toString()
         // pass the selected category and difficulty as extra params with the intent
-        // ToDo also pass the selected difficulty
-        val intent = Intent(this, MultipleChoiceActivity::class.java).apply {
+        // also pass the selected difficulty
+        val clazz = if (findViewById<RadioButton>(R.id.radioMultipleChoice).isChecked) {
+            MultipleChoiceActivity::class.java
+        } else {
+            YesNoChoiceActivity::class.java
+        }
+        val intent = Intent(this, clazz).apply {
             putExtra(EXTRA_MESSAGE_CAT_ID, selectedId)
             putExtra(EXTRA_MESSAGE_DIFF, selectedDiff)
             putExtra(EXTRA_MESSAGE_CAT_NAME, selectedItem.toString())
@@ -121,6 +127,8 @@ class MainActivity : AppCompatActivity() {
 
                 val activity = activityRef.get()
                 if (activity == null || activity.isFinishing) return
+                // default select multiple choice
+                activity.findViewById<RadioButton>(R.id.radioMultipleChoice).isChecked = true
                 activity.progressBar.visibility = View.GONE
             }
 

@@ -50,7 +50,7 @@ class OpenTrivia {
         Log.d(TAG, "getMultipleChoiceQuestion for category: $categoryId")
         val  url = "$OpenTriviaApiUrl?amount=1&category=$categoryId&difficulty=$level&type=multiple";
 
-        // ToDo call OpenTrivia and parse retrieved question and answers
+        // call OpenTrivia and parse retrieved question and answers
         // https://opentdb.com/api.php?amount=1&category=11&difficulty=easy&type=multiple
         //{
         //"response_code": 0,
@@ -92,4 +92,29 @@ class OpenTrivia {
         return multipleChoice
     }
 
+    fun getTrueFalseQuestion(categoryId : Int, difficulty : Difficulty) : YesNoQuestion {
+        Log.d(TAG, "getTrueFalseQuestion for category $categoryId")
+        val  url = "$OpenTriviaApiUrl?amount=1&category=$categoryId&difficulty=$difficulty&type=boolean";
+        Log.d(TAG, "execute request $url")
+        val request = Request.Builder().url(url).build()
+        val response = okHttpClient.newCall(request).execute()
+        val responseStr: String?  = response.body()?.string()
+        Log.d(TAG, "respBody: >$responseStr<")
+        // for test to see the progressbar ;)
+        Thread.sleep(600)
+
+        val resultsJson = JSONObject(responseStr)
+        val respCode = resultsJson.getInt("response_code")
+        if (respCode != 0)
+            throw  Exception("Unexpected response code: $respCode")
+
+        val firstResult = resultsJson.getJSONArray("results").getJSONObject(0)
+        val yesNo = YesNoQuestion(
+            Html.fromHtml(firstResult.getString("category")).toString(),
+            Html.fromHtml(firstResult.getString("question")).toString(),
+            firstResult.getString("correct_answer").toUpperCase().equals("TRUE")
+        )
+        Log.d(TAG, "YesNo: {$yesNo")
+        return yesNo
+    }
 }

@@ -5,5 +5,6 @@ class MultipleChoice constructor(val category : String, val question: String, va
     var wrongAnswers : ArrayList<String> = ArrayList(nAnswers)
     var correctAnswer : String = ""
     init {
+
     }
 }
