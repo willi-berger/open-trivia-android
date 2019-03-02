@@ -23,6 +23,7 @@ class  MultipleChoiceActivity : AppCompatActivity() {
     private var categoryId : Int = 0
     private var score : Int = 0
     private var difficulty : Difficulty = Difficulty.easy
+    private var token: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,7 @@ class  MultipleChoiceActivity : AppCompatActivity() {
         categoryId = intent.getIntExtra(EXTRA_MESSAGE_CAT_ID, 0)
         difficulty = Difficulty.valueOf(intent.getStringExtra(EXTRA_MESSAGE_DIFF))
         val categoryName = intent.getStringExtra(EXTRA_MESSAGE_CAT_NAME)
+        token = intent.getStringExtra(EXTRA_MESSAGE_CAT_TOKEN)
         Log.d(TAG, "categoryId: $categoryId difficulty: $difficulty")
         setContentView(R.layout.activity_multiple_choice)
 
@@ -81,7 +83,7 @@ class  MultipleChoiceActivity : AppCompatActivity() {
                 updateInfoText(this, difficulty, score)
 
             } else {
-                Toast.makeText(this, "Wrong :) -- Right answer is ${multipleChoice.correctAnswer}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Wrong :( -- Right answer is ´${multipleChoice.correctAnswer}´", Toast.LENGTH_LONG).show()
             }
 
             this.findViewById<Button>(R.id.nextButton).isEnabled = true
@@ -118,7 +120,7 @@ class  MultipleChoiceActivity : AppCompatActivity() {
                 val activity = activity()?: return -1
                 //retrieve multiple choice
                 try {
-                    val multipleChoice = OpenTrivia().getMutltipleChoiceQuestion(categoryId, difficulty)
+                    val multipleChoice = OpenTrivia().getMutltipleChoiceQuestion(categoryId, difficulty, activity.token)
                     activity.multipleChoice = multipleChoice
                     // populate UI with question and answer
                     activity.runOnUiThread {
