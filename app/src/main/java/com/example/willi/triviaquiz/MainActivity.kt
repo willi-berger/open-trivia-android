@@ -20,6 +20,7 @@ private const val TAG = "MainActivity";
 const val EXTRA_MESSAGE_CAT_ID = "com.example.willi.triviaquiz.msg.catId";
 const val EXTRA_MESSAGE_CAT_NAME = "com.example.willi.triviaquiz.msg.catName";
 const val EXTRA_MESSAGE_DIFF = "com.example.willi.triviaquiz.msg.diff";
+const val EXTRA_MESSAGE_CAT_TOKEN = "com.example.willi.triviaquiz.msg.token";
 
 /**
  * main activity
@@ -27,12 +28,14 @@ const val EXTRA_MESSAGE_DIFF = "com.example.willi.triviaquiz.msg.diff";
 class MainActivity : AppCompatActivity() {
 
     var categoriesToIdMap = HashMap<String, Int>()
+    var token : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // load categories and populate with async Task
+        //  and token
         val task = AsynchLoadCategories(this)
         task.execute("urlparam")
 
@@ -73,6 +76,7 @@ class MainActivity : AppCompatActivity() {
             putExtra(EXTRA_MESSAGE_CAT_ID, selectedId)
             putExtra(EXTRA_MESSAGE_DIFF, selectedDiff)
             putExtra(EXTRA_MESSAGE_CAT_NAME, selectedItem.toString())
+            putExtra(EXTRA_MESSAGE_CAT_TOKEN, token)
         }
         startActivity(intent)
     }
@@ -98,6 +102,7 @@ class MainActivity : AppCompatActivity() {
                 // fetch categories
                 val categoriesArray : ArrayList<String> = ArrayList<String>();
                 try {
+                    activity.token = OpenTrivia().getToken()
                     Log.d(TAG,"retrieve categories from OpenTrivia");
                     for (cat in OpenTrivia().getCategories()) {
                         Log.d(TAG, "adding category ${cat.name} to list")
@@ -120,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(activity, "An error occurred please retry later: ${e.message}", Toast.LENGTH_LONG).show()
                     })
                 }
-                return "done"
+                return activity.token
             }
 
             override fun onPostExecute(result: String?) {

@@ -46,9 +46,9 @@ class OpenTrivia {
         return categories
     }
 
-    fun getMutltipleChoiceQuestion(categoryId : Int, level : Difficulty) : MultipleChoice {
-        Log.d(TAG, "getMultipleChoiceQuestion for category: $categoryId")
-        val  url = "$OpenTriviaApiUrl?amount=1&category=$categoryId&difficulty=$level&type=multiple";
+    fun getMutltipleChoiceQuestion(categoryId : Int, level : Difficulty, token : String?) : MultipleChoice {
+        Log.d(TAG, "getMultipleChoiceQuestion for category: $categoryId using token $token")
+        val  url = "$OpenTriviaApiUrl?amount=1&category=$categoryId&difficulty=$level&type=multiple&token=$token";
 
         // call OpenTrivia and parse retrieved question and answers
         // https://opentdb.com/api.php?amount=1&category=11&difficulty=easy&type=multiple
@@ -92,9 +92,9 @@ class OpenTrivia {
         return multipleChoice
     }
 
-    fun getTrueFalseQuestion(categoryId : Int, difficulty : Difficulty) : YesNoQuestion {
-        Log.d(TAG, "getTrueFalseQuestion for category $categoryId")
-        val  url = "$OpenTriviaApiUrl?amount=1&category=$categoryId&difficulty=$difficulty&type=boolean";
+    fun getTrueFalseQuestion(categoryId : Int, difficulty : Difficulty, token : String?) : YesNoQuestion {
+        Log.d(TAG, "getTrueFalseQuestion for category $categoryId anf token $token")
+        val  url = "$OpenTriviaApiUrl?amount=1&category=$categoryId&difficulty=$difficulty&type=boolean&token=$token";
         Log.d(TAG, "execute request $url")
         val request = Request.Builder().url(url).build()
         val response = okHttpClient.newCall(request).execute()
@@ -116,5 +116,21 @@ class OpenTrivia {
         )
         Log.d(TAG, "YesNo: {$yesNo")
         return yesNo
+    }
+
+    fun getToken() : String {
+        Log.d(TAG, "retrieve token")
+        val url = "https://opentdb.com/api_token.php?command=request"
+        val request = Request.Builder().url(url).build()
+        val response = okHttpClient.newCall(request).execute()
+        val responseStr = response.body()?.string()
+        val respBodyJson = JSONObject(responseStr)
+
+        val respCode =  respBodyJson.getInt("response_code")
+        if (respCode != 0)
+            throw  Exception("Unexpected response code: $respCode")
+        val token = respBodyJson.getString("token")
+        Log.d(TAG, "token = $token")
+        return token
     }
 }

@@ -24,6 +24,7 @@ class YesNoChoiceActivity : AppCompatActivity() {
     private var difficulty: Difficulty = Difficulty.easy
     private var score: Int = 0
     private var yesNoQuestion: YesNoQuestion = YesNoQuestion("","", false)
+    private var token: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "YesNoActivitiy onCreate")
@@ -34,6 +35,7 @@ class YesNoChoiceActivity : AppCompatActivity() {
         // category and difficulty are passed as intent params
         categoryId = intent.getIntExtra(EXTRA_MESSAGE_CAT_ID, 0)
         difficulty = Difficulty.valueOf(intent.getStringExtra(EXTRA_MESSAGE_DIFF))
+        token = intent.getStringExtra(EXTRA_MESSAGE_CAT_TOKEN)
 
         // initialize info
         updateInfoText(this, difficulty, score)
@@ -91,7 +93,7 @@ class YesNoChoiceActivity : AppCompatActivity() {
 
                 //retrieve multiple choice
                 try {
-                    val yesNoQuestion = OpenTrivia().getTrueFalseQuestion(categoryId, difficulty)
+                    val yesNoQuestion = OpenTrivia().getTrueFalseQuestion(categoryId, difficulty, activity.token)
                     activity.yesNoQuestion = yesNoQuestion
                     // populate UI with question and answer
                     activity.runOnUiThread {
